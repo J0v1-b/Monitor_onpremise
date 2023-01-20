@@ -1,0 +1,36 @@
+---
+- name: Verificar se o nginx está instalado e em execução
+  shell: "which nginx"
+  register: nginx_check
+  ignore_errors: true
+  changed_when: false
+
+- name: Restartar serviço nginx se necessário
+  service:
+    name: nginx
+    state: restarted
+  when: nginx_check.rc != 0
+
+- name: Verificar se o netbackup está instalado e em execução
+  shell: "which netbackup"
+  register: netbackup_check
+  ignore_errors: true
+  changed_when: false
+
+- name: Restartar serviço netbackup se necessário
+  service:
+    name: netbackup
+    state: restarted
+  when: netbackup_check.rc != 0
+
+- name: Verificar se o zabbix agent está instalado e em execução
+  shell: "which zabbix_agentd"
+  register: zabbix_agent_check
+  ignore_errors: true
+  changed_when: false
+
+- name: Restartar serviço zabbix agent se necessário
+  service:
+    name: zabbix_agentd
+    state: restarted
+  when: zabbix_agent_check.rc != 0

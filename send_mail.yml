@@ -1,0 +1,34 @@
+---
+- name: garantir que módulos csvfile e mail estão instalados
+  pip:
+    name:
+    - csvfile
+    - mail
+    state: present
+
+
+- name: Criar planilha com resultados
+  local_action:
+    module: csvfile
+    path: "healthcheck_results.csv"
+    headers:
+      - hostname
+      - cpu_usage
+      - filesystem
+      - usage
+    rows:
+    - { hostname: "{{ inventory_hostname }}", cpu_usage: "{{ cpu_usage.stdout }}", filesystem: "{{ item.split()[0] }}", usage: "{{ item.split()[1] }}" }
+    with_items: "{{ filesystem_status.stdout_lines }}"
+
+- name: Enviar planilha por email
+  local_action:
+    module: mail
+    host: host@example.com
+    port: 587
+    #username: ansible@example.com
+    #password: mysecretpassword
+    to: destiny@example.com
+    subject: Healthcheck results
+    body: "Please find attached the healthcheck results for all hosts"
+    attachments:
+    - healthcheck_results.csv

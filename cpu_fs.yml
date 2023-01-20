@@ -1,0 +1,10 @@
+---
+- name: Coletar uso de CPU
+  shell: "grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage}'"
+  register: cpu_usage
+  delegate_to: "{{ inventory_hostname }}"
+
+- name: Verificar filesystems
+  shell: "df -h --total | awk '{print $6,$5}' | tail -n +2"
+  register: filesystem_status
+  delegate_to: "{{ inventory_hostname }}"

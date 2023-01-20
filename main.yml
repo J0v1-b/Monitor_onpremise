@@ -1,0 +1,15 @@
+---  
+- name: Executa playbooks de healthcheck, de sistemas e manda por email em planilha
+  hosts: all
+  become: true
+  gather_facts: yes
+
+  tasks:
+  - name: Executar playbook de coleta de uso de CPU e de filesystems
+    include: cpu_fs.yml
+
+  - name: Executar playbook de verificação de serviços
+    include: services.yml
+
+  - name: Executar playbook de envio de email
+    include: send_mail.yml
