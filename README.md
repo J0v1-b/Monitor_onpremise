@@ -1,5 +1,5 @@
 # useful-ansible
-Welcome! This repo contains a collection of useful Ansible playbooks and roles for monitoring distributed on-premise linux environment!
+Welcome! This repo contains useful Ansible playbooks for monitoring distributed on-premise linux environment!
 
 ## Getting Started
 1. Make sure you have Ansible installed on your system.
