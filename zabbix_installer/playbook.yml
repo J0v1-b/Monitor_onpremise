@@ -1,0 +1,8 @@
+---
+- name: Install and Config new host
+  hosts: all
+  become: true
+  gather_facts: yes
+  
+  roles:
+    - zabbix

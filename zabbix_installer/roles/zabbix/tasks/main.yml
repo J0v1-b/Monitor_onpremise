@@ -1,0 +1,40 @@
+---  
+- name: Faça backup do arquivo de configuração existente
+  shell: "mv /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf_OLD"
+  args:
+    creates: /etc/zabbix/zabbix_agentd.conf_OLD
+  when: os.stat('/etc/zabbix/zabbix_agentd.conf').st_size != 0
+  ignore_errors: true
+
+- name: Crie o arquivo de configuração do Zabbix Agent
+  copy:
+    src: "{{ role_path }}/files/zabbix_agentd.conf"
+    dest: "/etc/zabbix/zabbix_agentd.conf"
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r" 
+
+- name: Envie o pacote de zabbix-agent para o servidor
+  copy:
+    src: "{{ role_path }}/files/zabbix-agent-5.0.30-1.el8.x86_64.rpm"
+    dest: "/tmp/zabbix-agent-5.rpm"
+    owner: root
+    group: root
+    mode: 777
+
+- name: Garantir que openssl está atualizado
+  package:
+    name: openssl
+    state: latest
+
+- name: Instale pacote zabbix-agent
+  shell: "rpm -Uvh /tmp/zabbix-agent-5.rpm"
+  ignore_errors: true 
+  when: install_result.rc == 0 
+
+- name: Inicie e habilite o Zabbix Agent
+  service:
+    name: zabbix-agent
+    state: started
+    enabled: yes
+...
